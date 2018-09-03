@@ -12,9 +12,7 @@ Two programs, wordCounter and wordCount, are in this repository which do the fol
   words sorted in descending order with their respective totals
   separated by a space, one word per line
   
-To call the programs do the following: 
-*`$ python wordCount.py input.txt output.txt`
-*`$ python wordCounter.py input.txt output.txt`
+To call the programs do the following: `$ python wordCount.py input.txt output.txt` or `$ python wordCounter.py input.txt output.txt`
 
 To test your program we provide wordCountTest.py and two key
 files. This test program takes your output file and notes any

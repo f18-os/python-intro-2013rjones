@@ -15,7 +15,7 @@ if rc < 0:
 elif rc == 0:                   # child
     os.write(1, ("Child: My pid==%d.  Parent's pid=%d\n" % 
                  (os.getpid(), pid)).encode())
-    print(ays.argv)
+    print(sys.argv)
     args = [sys.argv[1], "p3-exec.py"]
 
     os.close(1)                 # redirect child's stdout

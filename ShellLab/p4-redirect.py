@@ -16,7 +16,7 @@ elif rc == 0:                   # child
     os.write(1, ("Child: My pid==%d.  Parent's pid=%d\n" % 
                  (os.getpid(), pid)).encode())
     print(sys.argv)
-    args = [sys.argv[1], sys.argv[3]]
+    args = [sys.argv[1], sys.argv[2]]
 
     os.close(1)                 # redirect child's stdout
     sys.stdout = open(sys.argv[3], "w")

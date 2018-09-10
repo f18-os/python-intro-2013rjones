@@ -15,10 +15,10 @@ if rc < 0:
 elif rc == 0:                   # child
     os.write(1, ("Child: My pid==%d.  Parent's pid=%d\n" % 
                  (os.getpid(), pid)).encode())
-    args = ["wc", "p3-exec.py"]
+    args = [sys.argv[1], "p3-exec.py"]
 
     os.close(1)                 # redirect child's stdout
-    sys.stdout = open("p4-output.txt", "w")
+    sys.stdout = open(sys.argv[3], "w")
     fd = sys.stdout.fileno() # os.open("p4-output.txt", os.O_CREAT)
     os.set_inheritable(fd, True)
     os.write(2, ("Child: opened fd=%d for writing\n" % fd).encode())

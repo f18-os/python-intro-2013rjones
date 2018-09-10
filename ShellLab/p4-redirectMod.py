@@ -16,10 +16,9 @@ if rc < 0:
 
 elif rc == 0:                   # child
     os.write(1, ("Child: My pid==%d.  Parent's pid=%d\n" % (os.getpid(), pid)).encode())
-    args = [sys.argv[1], sys.argv[2]] 
-
+    args = ["wc", "p3-exec.py"]
     os.close(1)                 # redirect child's stdout
-    sys.stdout = open(sys.argv[3], "w")
+    sys.stdout = open("sampOut.txt", "w")
     fd = sys.stdout.fileno() # os.open("p4-output.txt", os.O_CREAT)
     os.set_inheritable(fd, True)
     os.write(2, ("Child: opened fd=%d for writing\n" % fd).encode())
@@ -27,7 +26,7 @@ elif rc == 0:                   # child
     for dir in re.split(":", os.environ['PATH']): # try each directory in path
         program = "%s/%s" % (dir, args[0])
         try:
-            os.execve(program, args, os.environ) # try to exec program
+            os.execve(program, argpyths, os.environ) # try to exec program
         except FileNotFoundError:             # ...expected
             pass                              # ...fail quietly 
 

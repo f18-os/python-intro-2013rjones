@@ -22,7 +22,10 @@ elif rc == 0:                   # child
     sys.stdout = open(sys.argv[3], "w")
     fd = sys.stdout.fileno() # os.open("p4-output.txt", os.O_CREAT)
     os.set_inheritable(fd, True)
-    os.write(2, ("Child: opened fd=%d for writing\n" % fd).encode())
+
+    sys.stdin = open(sys.argv[2])
+    fd1 = sys.stdin.fileno() # os.open("p4-output.txt", os.O_CREAT)
+    os.set_inheritable(fd1, True)
 
     for dir in re.split(":", os.environ['PATH']): # try each directory in path
         program = "%s/%s" % (dir, args[0])

@@ -18,6 +18,7 @@ while (cont == "True"):
            print (cmd) 
            if(curCnt == 0): 
                primeCmd = cmd
+               curCnt = curCnt + 1
            if(redirOut == "true"):
                redirOut = "false" 
                outputFile = cmd   

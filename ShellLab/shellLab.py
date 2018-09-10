@@ -10,11 +10,13 @@ while (cont == "True"):
    if((commandFull == "Exit") or (commandFull == "exit")):
        cont = "false"
    else:
+       allCmdsString = ""
        cmds = commandFull.split()
        curCnt = 0
        redirIn = "false"
        redirOut = "false"
        for cmd in cmds: 
+           allCmdsString = allCmdsString + " " + cmd
            print (cmd) 
            if(curCnt == 0): 
                primeCmd = cmd
@@ -35,7 +37,7 @@ while (cont == "True"):
           os.system("python3 p4-redirect.py " + primeCmd + " " + inputFile + " " + outputFile)  
        #Add in code to handle not both. 
        else: 
-          os.system("python3 p3-exec.py " + cmds)  
+          os.system("python3 p3-exec.py " + allCmdsString)  
            
 
        #Add code to just run executions  

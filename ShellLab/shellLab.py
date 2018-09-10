@@ -30,8 +30,7 @@ while (cont == "True"):
                redirIn = "true"
        #should have all my information for a redirect by this point. 
        #now we should call the function passing arguments. 
-       executePgm = os.path.dirname(os.path.abspath(__file__)) + "/p4-redirectMod.py"
-       os.system("python3 "+executePgm +" " + primeCmd + " " + inputFile + " " + outputFile)  
+       os.system("python3 p4-redirect " + primeCmd + " " + inputFile + " " + outputFile)  
        curCnt = 0
 
                   

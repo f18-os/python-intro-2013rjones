@@ -14,7 +14,8 @@ while (cont == "True"):
        curCnt = 0
        redirIn = "false"
        redirOut = "false"
-       for cmd in cmds:  
+       for cmd in cmds: 
+           print (cmd) 
            if(curCnt == 0): 
                primeCmd = cmd
            if(redirOut == "true"):
@@ -29,7 +30,10 @@ while (cont == "True"):
                redirIn = "true"
        #should have all my information for a redirect by this point. 
        #now we should call the function passing arguments. 
-       os.system("p4-redirectMod" + primeCmd + " " + inputFile + " "+ outputFile)  
-   
-             
+       executePgm = os.path.dirname(os.path.abspath(__file__)) + "\p4-redirectMod.py"
+       os.system("c:/python27/python.exe "+executePgm +" " + primeCmd + " " + inputFile + " " + outputFile)  
+       curCnt = 0
+
+                  
+                
 print "Exited"

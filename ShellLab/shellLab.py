@@ -31,7 +31,15 @@ while (cont == "True"):
                redirIn = "true"
        #should have all my information for a redirect by this point. 
        #now we should call the function passing arguments. 
-       os.system("python3 p4-redirect.py " + primeCmd + " " + inputFile + " " + outputFile)  
+       if((redirIn == "true") and (redirOut == "true")):
+          os.system("python3 p4-redirect.py " + primeCmd + " " + inputFile + " " + outputFile)  
+       #Add in code to handle not both. 
+       else: 
+          os.system("python3 p3-exec.py " + cmds)  
+           
+
+       #Add code to just run executions  
+          
        curCnt = 0
 
                   

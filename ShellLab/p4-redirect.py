@@ -1,4 +1,8 @@
 #! /usr/bin/env python3
+#passes in what kind of args are given. 
+#1 - redirect 1 input only
+#2 - redirect 2 output only  
+#3 - redirect all 
 
 import os, sys, time, re
 
@@ -19,10 +23,13 @@ elif rc == 0:                   # child
     args = [sys.argv[1], sys.argv[2]]
 
     os.close(1)                 # redirect child's stdout
+
+    #normOut = sys.stdout
     sys.stdout = open(sys.argv[3], "w")
     fd = sys.stdout.fileno() # os.open("p4-output.txt", os.O_CREAT)
     os.set_inheritable(fd, True)
 
+    #normIn = sys.stdin
     sys.stdin = open(sys.argv[2])
     fd1 = sys.stdin.fileno() # os.open("p4-output.txt", os.O_CREAT)
     os.set_inheritable(fd1, True)
@@ -43,3 +50,5 @@ else:                           # parent (forked ok)
     childPidCode = os.wait()
     os.write(1, ("Parent: Child %d terminated with exit code %d\n" % 
                  childPidCode).encode())
+#sys.stdin = normIn
+#sys.stdout = normOut

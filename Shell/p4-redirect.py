@@ -61,7 +61,7 @@ elif rc == 0:                   # child
         sys.stdin = open(sys.argv[2])
         fd1 = sys.stdin.fileno() # os.open("p4-output.txt", os.O_CREAT)
         os.set_inheritable(fd1, True)
-    os.chdir(cmdDir)
+    os.chdir(curDir)
     for dir in re.split(":", os.environ['PATH']): # try each directory in path
         program = "%s/%s" % (dir, args[0])
         try:

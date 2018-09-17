@@ -30,6 +30,7 @@ while (cont):
        firstHalfstr = ""
        secondHalfStr = ""
        firstHalf = True 
+       redirect = False
        secondHalf = False
        for cmd in cmds: # go through each thing given and determine what to do with it. 
            #need to add code to catch path changes and ps1 modifications. 
@@ -38,12 +39,14 @@ while (cont):
                primeCmd = cmd
                firstCmd = False
            if(redirOut):
-               redirOut = False 
+               redirOut = False
+               redirect = True
                outputFile = cmd             
            if(cmd == ">"):
                redirOut = True
            if(redirIn):
-               redirIn = False 
+               redirIn = False
+               redirect = True
                inputFile = cmd   
            if(cmd == "<"):
                redirIn = True
@@ -63,8 +66,10 @@ while (cont):
        proceed = True
        #should have all my information for a redirect by this point. 
        #now we should call the function passing arguments. 
-       if((redirIn == "true") or (redirOut == "true")):
-          os.system("python3 p4-redirect.py -c " + primeCmd + " -i " + inputFile + " -o " + outputFile + " -cmdp " + cmdDir + " -cuP " + curDir +  " -E " )  
+       if(redirect):
+          os.chdir(cmdDir)
+          os.system("python3 p4-redirect.py -c " + primeCmd + " -i " + inputFile + " -o " + outputFile + " -cmdp " + cmdDir + " -cuP " + curDir +  " -E " )
+          os.chdir(curDir)
           proceed = False
        if(proceed): #then that means there were no major changes to be made. 
            execute = True

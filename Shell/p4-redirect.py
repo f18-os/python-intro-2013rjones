@@ -7,7 +7,8 @@ import os, sys, time, re
 outputFile= ""
 inputFile = ""
 cmd = ""
-
+curDir = ""
+cmdDir = ""
 def argProcessing():
     prev = ""
     for x in argv[1:]:
@@ -17,8 +18,12 @@ def argProcessing():
         if((prev.strip() == "-i") and (x.strip() != "-o")): 
             inputFile = x.strip() 
         
-        if((prev.strip() == "-o") and (x.strip() != "-E")): 
+        if((prev.strip() == "-o") and (x.strip() != "-cmdp")): 
             outputFile = x.strip() 
+        if((prev.strip() == "-cmdp") and (x.strip() != "-cuP")): 
+            cmdDir = x.strip()     
+        if((prev.strip() == "-cuP") and (x.strip() != "-E")): 
+            curDir = x.strip()     
         
         prev = x  
 
@@ -36,6 +41,8 @@ if rc < 0:
 elif rc == 0:                   # child
     #os.write(1, ("Child: My pid==%d.  Parent's pid=%d\n" % (os.getpid(), pid)).encode())
     #print(sys.argv)
+    os.chdir(curDir)
+    
     args = [sys.argv[1], sys.argv[2]]
 
     normOut = sys.stdout
@@ -54,14 +61,14 @@ elif rc == 0:                   # child
         sys.stdin = open(sys.argv[2])
         fd1 = sys.stdin.fileno() # os.open("p4-output.txt", os.O_CREAT)
         os.set_inheritable(fd1, True)
-
+    os.chdir(cmdDir)
     for dir in re.split(":", os.environ['PATH']): # try each directory in path
         program = "%s/%s" % (dir, args[0])
         try:
-            os.execve(program, args, os.environ) # try to exec program
+            os.execve(program, args + " -d " + curDir, os.environ) # try to exec program
         except FileNotFoundError:             # ...expected
             pass                              # ...fail quietly 
-
+    os.chdir(curDir)
     os.write(2, ("Child:    Error: Could not exec %s\n" % args[0]).encode())
     sys.exit(1)                 # terminate with error
 

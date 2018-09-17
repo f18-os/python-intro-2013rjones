@@ -3,7 +3,6 @@
 import os, sys, time, re
 
 pid = os.getpid()
-
 #os.write(1, ("About to fork (pid:%d)\n" % pid).encode())
 
 rc = os.fork()
@@ -14,7 +13,21 @@ if rc < 0:
 
 elif rc == 0:                   # child
     #os.write(1, ("Child: My pid==%d.  Parent's pid=%d\n" % (os.getpid(), pid)).encode())
-    args = sys.argv[1:]
+    cnt = 0
+    saveNxt = False
+    for each in sys.argv:
+       if(saveNxt):
+          os.chdir(each)
+          print("dir:" + each)
+          saveNxt = False
+       if(each.strip() != "-d"):
+          cnt += 1 
+       else:
+          saveNxt = True 
+          
+ 
+    args = sys.argv[1:(cnt-1)]
+    #print(args)
     for dir in re.split(":", os.environ['PATH']): # try each directory in the path
         program = "%s/%s" % (dir, args[0])
         #os.write(1, ("Child:  ...trying to exec %s\n" % program).encode())

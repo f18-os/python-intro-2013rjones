@@ -8,13 +8,13 @@ outputFile = " ";
 primeCmd = " "; 
 curDir = os.environ['PATH']
 while (cont):
-   print(curDir)
+   #print(curDir)
    commandFull = raw_input("$")
-   print(commandFull)
+   #print(commandFull)
    if((commandFull.upper().strip() == "EXIT") or (commandFull.upper().strip() == "$EXIT") ):  #this is my exit conditional
        cont = False
    else:  #if not exit then lets determine our commands.
-       print("This is what it reads:" + commandFull)
+       #print("This is what it reads:" + commandFull)
        allCmdsString = ""
        cmds = commandFull.split() #separate by spaces all commands given. 
        firstCmd = True #determines first command. 
@@ -52,9 +52,9 @@ while (cont):
                   secondHalf = True 
                   firstHalf = False 
            if(firstHalf):
-                firstHalfstr = firstHalfStr + " " + cmd
+                firstHalfstr += " " + cmd
            if(secondHalf): 
-                secondHalfstr = secondHalfStr + " " + cmd  
+                secondHalfstr += " " + cmd  
        #end of commands.         
        proceed = True
        #should have all my information for a redirect by this point. 

@@ -45,7 +45,7 @@ if rc < 0:
 elif rc == 0:                   # child
     #os.write(1, ("Child: My pid==%d.  Parent's pid=%d\n" % (os.getpid(), pid)).encode())
     #print(sys.argv)
-    
+
     os.chdir(curDir)
     args = [sys.argv[2], sys.argv[4]]
 

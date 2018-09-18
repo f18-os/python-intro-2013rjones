@@ -8,3 +8,7 @@ commands using a parent and child. While the program piping.py handles piping, a
 redirecting input/output. 
   
 To call the shell do the following: `python3 shellLab.py ` 
+
+This runs general commands, as well as redirects, as well as piping. 
+It cannot at this time handle chains of redirects with piping or piping with redirects. 
+

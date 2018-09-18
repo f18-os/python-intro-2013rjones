@@ -28,10 +28,11 @@ while (cont):
        pipeToCmds = []
        numPipes = 0 
        firstHalfstr = ""
-       secondHalfStr = ""
+       secondHalfstr = ""
        firstHalf = True 
        redirect = False
        secondHalf = False
+       piped = False
        for cmd in cmds: # go through each thing given and determine what to do with it. 
            #need to add code to catch path changes and ps1 modifications. 
            allCmdsString = allCmdsString + " " + cmd # for use if we are missing piping or redirection. 
@@ -54,15 +55,21 @@ while (cont):
                piping = True
                if(secondHalf): #then we have both 
                    os.system("python3 piping.py " + " -fh " + firstHalf + " -sh " + secondHalf + " -E ") 
-
+                   piped = True
                else: #start storing secondary commands. 
                   secondHalf = True 
                   firstHalf = False 
            if(firstHalf):
-                firstHalfstr += " " + cmd
+               if(cmd != "|"):
+                  firstHalfstr += " " + cmd
            if(secondHalf): 
-                secondHalfstr += " " + cmd  
-       #end of commands.         
+               if(cmd != "|"):
+                  secondHalfstr += " " + cmd  
+       #end of commands.     
+       if(secondHalf): #then we have both 
+                   os.system("python3 piping.py " + " -fh " + firstHalfstr + " -sh " + secondHalfstr + " -E ") 
+                   piped = True
+               
        proceed = True
        #should have all my information for a redirect by this point. 
        #now we should call the function passing arguments. 
@@ -116,7 +123,7 @@ while (cont):
                     print("Unable to change directory")
                     os.chdir(origDir)
                     curDir = origDir 
-           if(execute):
+           if((execute) and not (piped)):
                #print("Current: " +curDir)
                os.chdir(cmdDir)
                os.system(" python3 p3-exec.py " + allCmdsString + " -d " + curDir)

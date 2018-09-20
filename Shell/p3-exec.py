@@ -42,4 +42,9 @@ elif rc == 0:                   # child
 else:                           # parent (forked ok)
     #os.write(1, ("Parent: My pid=%d.  Child's pid=%d\n" %(pid, rc)).encode())
     childPidCode = os.wait()
+    val=childPidCode[1]
+    if(val != 0):
+        sys.exit(1)
+    else:    
+        sys.exit(0)
     #os.write(1, ("Parent: Child %d terminated with exit code %d\n" % childPidCode).encode())

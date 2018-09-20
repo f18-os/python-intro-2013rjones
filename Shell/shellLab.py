@@ -1,6 +1,6 @@
 #! /usr/bin/env python3
 
-import os
+import os, subprocess 
 # THIS WILL ONLY WORK FOR ONE PIPE CMD at a time. 
 
 curToSend = 0; 
@@ -11,9 +11,12 @@ primeCmd = " ";
 curDir = os.path.dirname(os.path.realpath(__file__))
 origDir = curDir
 cmdDir= curDir
-while (cont):
+os.environ['PS1'] = curDir + "$"  #PS1 was not defined thus pulled path and appended $
+
+while (cont): #loop until user puts exit. 
    #print(curDir)
-   commandFull = raw_input("$")
+
+   commandFull = raw_input(os.environ['PS1'])
    #print(commandFull)
    if((commandFull.upper().strip() == "EXIT") or (commandFull.upper().strip() == "$EXIT") ):  #this is my exit conditional
        cont = False
@@ -24,6 +27,7 @@ while (cont):
        firstCmd = True #determines first command. 
        redirIn = False
        redirOut = False
+       totCmd = 0 
        piping = False
        pipeToCmds = []
        numPipes = 0 
@@ -33,45 +37,96 @@ while (cont):
        redirect = False
        secondHalf = False
        piped = False
-       for cmd in cmds: # go through each thing given and determine what to do with it. 
-           #need to add code to catch path changes and ps1 modifications. 
-           allCmdsString = allCmdsString + " " + cmd # for use if we are missing piping or redirection. 
-           if(firstCmd): 
-               primeCmd = cmd
-               firstCmd = False
-           if(redirOut):
-               redirOut = False
-               redirect = True
-               outputFile = cmd             
-           if(cmd == ">"):
-               redirOut = True
-           if(redirIn):
-               redirIn = False
-               redirect = True
-               inputFile = cmd   
-           if(cmd == "<"):
-               redirIn = True
-           if(cmd == "|"): # then we need to pipe the output of the cmds so far into the stuff on the right.  
-               piping = True
-               if(secondHalf): #then we have both 
-                   os.system("python3 piping.py " + " -fh " + firstHalf + " -sh " + secondHalf + " -E ") 
-                   piped = True
-               else: #start storing secondary commands. 
-                  secondHalf = True 
-                  firstHalf = False 
-           if(firstHalf):
-               if(cmd != "|"):
-                  firstHalfstr += " " + cmd
-           if(secondHalf): 
-               if(cmd != "|"):
-                  secondHalfstr += " " + cmd  
-       #end of commands.     
-       if(secondHalf): #then we have both 
-                   os.system("python3 piping.py " + " -fh " + firstHalfstr + " -sh " + secondHalfstr + " -E ") 
-                   piped = True
-               
+       cmdCnt = 0
+       setting = False
+       setStart = False
+       setCont = False
+       noSetVar = True
        proceed = True
-       #should have all my information for a redirect by this point. 
+       contThru = True
+       name = ""
+       if(commandFull.strip() == ""):
+            proceed = False 
+       for cmd in cmds: #for all environment variables. 
+           
+           if(setCont): 
+               os.environ[name] = cmd.strip() 
+               noSetVar = False
+               proceed = False 
+               contThru = False
+               break
+           if((cmd[0:1] == "$") and (cmdCnt == 0)): 
+               #then lets assume we are probably setting it to something 
+               name = cmd[1:].strip()
+               setStart = True 
+           if((cmd == "=") and (setStart)):
+               setCont = True 
+           cmdCnt = 1         
+       cmdCnt = 0 
+       if(contThru):
+            for cmd in cmds: #for specific environment variables. 
+                
+                if(setCont): 
+                    os.environ["PS1"] = cmd.strip()
+                    noSetVar = False
+                    proceed = False 
+                    break
+                if((cmd == "$PS1") and (cmdCnt == 0)): 
+                    #then lets assume we are probably setting it to something 
+                    setStart = True 
+                if((cmd == "=") and (setStart)):
+                    setCont = True 
+                cmdCnt = 1    
+       if(noSetVar):
+            totCmd = 0; 
+            for cmd in cmds: # go through each thing given and determine what to do with it. 
+                totCmd = totCmd + 1
+                #need to add code to catch path changes and ps1 modifications. 
+                # for use if we are missing piping or redirection. 
+                notValName = True
+                if "$" in cmd.strip():
+                    try:
+                        cmd =  os.environ[cmd[1:].strip()] #cuts out $
+                        notValName = False
+                    except: 
+                        print("Environment Variable does not exist")
+                        proceed = False
+                        break; 
+                    
+                # for use if we are missing piping or redirection. 
+                allCmdsString = allCmdsString + " " + cmd     
+                if(firstCmd): 
+                    primeCmd = cmd
+                    firstCmd = False
+                if(redirOut):
+                    redirOut = False
+                    redirect = True
+                    outputFile = cmd             
+                if(cmd == ">"):
+                    redirOut = True
+                if(redirIn):
+                    redirIn = False
+                    redirect = True
+                    inputFile = cmd   
+                if(cmd == "<"):
+                    redirIn = True
+                if(cmd == "|"): # then we need to pipe the output of the cmds so far into the stuff on the right.  
+                    piping = True
+                    secondHalf = True 
+                    firstHalf = False 
+                if(firstHalf):
+                    if(cmd != "|"):
+                        firstHalfstr += " " + cmd
+                if(secondHalf): 
+                    if(cmd != "|"):
+                        secondHalfstr += " " + cmd  
+                #end of commands.     
+            if(secondHalf): #then we have both 
+                os.system("python3 piping.py " + " -fh " + firstHalfstr + " -sh " + secondHalfstr + " -E ") 
+                piped = True
+                proceed = False
+            
+       #should have all mynformation for a redirect by this point. 
        #now we should call the function passing arguments. 
        if(redirect):
           os.chdir(cmdDir)
@@ -80,7 +135,7 @@ while (cont):
           proceed = False
        if(proceed): #then that means there were no major changes to be made. 
            execute = True
-           if((allCmdsString.strip() == "cd..")):
+           if((allCmdsString.strip() == "cd..")): # then we are changing our directory  backwards one. 
                execute = False
                try: 
                    #print("Start: " + curDir)
@@ -114,7 +169,7 @@ while (cont):
                    print("Unable to change directory")
                    os.chdir(origDir)
            allSplit = allCmdsString.split()         
-           if((allSplit[0] == "cd")):
+           if((allSplit[0] == "cd")): # then we are changing our directory to whatever follows. 
                execute = False
                curDir += "/" + allSplit[1]
                try: 
@@ -126,7 +181,11 @@ while (cont):
            if((execute) and not (piped)):
                #print("Current: " +curDir)
                os.chdir(cmdDir)
-               os.system(" python3 p3-exec.py " + allCmdsString + " -d " + curDir)
+               ec = os.system(" python3 p3-exec.py " + allCmdsString + " -d " + curDir)
+               #print("ec: "+ str(ec))
+               if(ec != 0): 
+                  print("Command Not Found.")
+               
                os.chdir(curDir)        
         #okay now we need to reset to allow multiple runs.
                   

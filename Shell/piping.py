@@ -3,8 +3,6 @@
 
 import os, sys, time, re
 
-
-
 r,w = os.pipe()
 
 rc = os.fork()
@@ -16,11 +14,17 @@ if rc < 0:
 elif rc == 0:
     os.close(r)
     os.dup2(w, sys.stdout.fileno())
+    
+    os.close(2)
     args = [sys.argv[2], sys.argv[3]]
     
-    os.system(sys.argv[2] + " " + sys.argv[3])
-    sys.exit(1)     # terminate with error
+    rc3 = os.system(sys.argv[2] + " " + sys.argv[3])
+    if(rc3 != 0): 
+       sys.exit(1)
+    else:
+       sys.exit(0)     # terminate with no error
 
+    
     
 rc2 = os.fork()
 if rc2 < 0:
@@ -29,7 +33,15 @@ if rc2 < 0:
 
 elif rc2 == 0:
     os.close(w)
+    os.close(2)
     os.close(0) # redirect child's stdin
     os.dup2(r, sys.stdin.fileno())
-    os.system(sys.argv[5]) 
-    sys.exit(1)     # terminate with error
+    try:
+       rc4 = os.system(sys.argv[5])
+       if(rc4 != 0):
+            print("Invalid Right Command")
+            sys.exit(1)
+       else:
+            sys.exit(0)     # terminate with no error
+    except: 
+        sys.exit(1)

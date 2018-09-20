@@ -1,0 +1,14 @@
+General contributions and code derivatives from: 
+https://www.tutorialspoint.com/python/
+
+https://docs.python.org/3/
+
+As well as a little collaboration on an implementation idea from Sebastian Nunez for the piping. He gave me the idea of splitting it into two consequetive calls. 
+
+All general outlines of code were initially provided by Dr.Freudenthal. I modified them to do what was necessary.
+P1-fork
+p2
+p3
+p4
+
+The other code was my own and the implementation of the general shell were entirely my own. 

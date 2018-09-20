@@ -18,7 +18,7 @@ elif rc == 0:                   # child
     for each in sys.argv:
        if(saveNxt):
           os.chdir(each)
-          print("dir:" + each)
+          #print("dir:" + each)
           saveNxt = False
        if(each.strip() != "-d"):
           cnt += 1 

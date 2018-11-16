@@ -44,7 +44,7 @@ def piping(leftCmd, rightCmd):
         except: 
             sys.exit(1)
 
-def forkRedirectOut(fullCommand): 
+def forkRedirectOut(fullCommand,back): 
     
     pid = os.getpid()               # get and remember pid
     splitCommand = fullCommand.split(" ")
@@ -97,11 +97,12 @@ def forkRedirectOut(fullCommand):
             sys.exit(1)                 # terminate with error
 
     else: #parent (forked ok)
-        childPidCode = os.wait()
+        if not back: 
+            childPidCode = os.wait()
 
 
 
-def forkExec(command): 
+def forkExec(command,back): 
     try:
         pid = os.getpid()
         rc = os.fork()
@@ -112,7 +113,8 @@ def forkExec(command):
             output = subprocess.check_output(['bash','-c', command])
             print(output.decode("utf-8"))
         else:                           # parent (forked ok)
-            os.wait()
+            if not back:
+                os.wait()
     except: 
         pass
 def changeDir(fullCommand): 
@@ -183,6 +185,11 @@ while (cont): #loop until user puts exit.
         if((commandFull.upper().strip() == "EXIT") or (commandFull.upper().strip() == "$EXIT") ):  #this is my exit conditional
             cont = False
         else:
+            back = False 
+            for element in splitCommand:
+                if element == "&": 
+                    back = True 
+                    print("BAcKGroUnd")
             didSomething = False
             nxtSave = False
             if "$PS1" in splitCommand: 
@@ -201,10 +208,10 @@ while (cont): #loop until user puts exit.
                 stepBackDir()
                 didSomething = True 
             if "<"  in splitCommand: 
-                forkRedirectOut(commandFull)
+                forkRedirectOut(commandFull, back)
                 didSomething = True 
             if ">" in splitCommand: 
-                forkRedirectOut(commandFull)
+                forkRedirectOut(commandFull, back)
                 didSomething = True 
             if "|" in splitCommand:
                  leftCmd = ""
@@ -220,7 +227,7 @@ while (cont): #loop until user puts exit.
                  #we now have the left and right of the pipe. 
                  piping(leftCmd,rightCmd)
             if(not didSomething): 
-                forkExec(commandFull)
+                forkExec(commandFull,back)
         
                   
 open("KILL.txt", "w+")                
